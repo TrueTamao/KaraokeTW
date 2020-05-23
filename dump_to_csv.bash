@@ -4,7 +4,7 @@ dbname=postgresql://mapa:mapacode@localhost:5432/origin_songs
 
 sudo su postgres -c "dropdb --if-exists origin_songs"
 sudo su postgres -c "createdb origin_songs"
-sudo su postgres -c "psql origin_songs < song.dump"
+sudo su postgres -c "psql origin_songs < ./db/song.dump"
 
 # 已刪除的歌手，對應的歌曲也應該是已刪除的狀態
 psql -d ${dbname} -c "
@@ -32,7 +32,7 @@ psql -d ${dbname} -c "
        songs.deleted::INTEGER
        from songs JOIN artists on songs.artist = artists.sn
        ORDER BY sn )
-       TO STDOUT with DELIMITER '|' csv ;" > origin_songs.csv
+       TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_songs.csv
        
 # 產生 songs csv 檔
 psql -d ${dbname} -c "
@@ -53,7 +53,7 @@ psql -d ${dbname} -c "
        from songs JOIN artists on songs.artist = artists.sn
        WHERE songs.deleted = FALSE
        ORDER BY sn )
-       TO STDOUT with DELIMITER '|' csv ;" > songs.csv
+       TO STDOUT with DELIMITER '|' csv ;" > ./db/songs.csv
 
 # 產生原始的 artists csv 檔
 psql -d ${dbname} -c "
@@ -68,7 +68,7 @@ psql -d ${dbname} -c "
        deleted::INTEGER
        from artists
        ORDER BY sn )
-       TO STDOUT with DELIMITER '|' csv ;" > origin_artists.csv
+       TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_artists.csv
 
 # 產生 karol 的 artists csv 檔
 psql -d ${dbname} -c "
@@ -83,28 +83,28 @@ psql -d ${dbname} -c "
        FROM artists
        WHERE deleted = FALSE 
        ORDER BY sn )
-       TO STDOUT with DELIMITER '|' csv ;" > artists.csv
+       TO STDOUT with DELIMITER '|' csv ;" > ./db/artists.csv
 
 # 產生原始的 song_categories csv 檔
 psql -d ${dbname} -c "
     COPY
     (SELECT sn, name, priority from song_categories ORDER BY sn )
-    TO STDOUT with DELIMITER '|' csv ;" > origin_song_categories.csv
+    TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_song_categories.csv
 
 # 產生原始的 song_languages csv 檔
 psql -d ${dbname} -c "
     COPY
     (SELECT sn, name, priority from song_languages ORDER BY sn )
-    TO STDOUT with DELIMITER '|' csv ;" > origin_song_languages.csv
+    TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_song_languages.csv
 
 # 產生原始的 artist_categories csv 檔
 psql -d ${dbname} -c "
     COPY
     (SELECT sn, name, priority from artist_categories ORDER BY sn )
-    TO STDOUT with DELIMITER '|' csv ;" > origin_artist_categories.csv
+    TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_artist_categories.csv
 
 # 產生原始的 artist_countries csv 檔
 psql -d ${dbname} -c "
     COPY
     (SELECT sn, name, priority from artist_countries ORDER BY sn )
-    TO STDOUT with DELIMITER '|' csv ;" > origin_artist_countries.csv
+    TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_artist_countries.csv

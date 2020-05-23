@@ -1,4 +1,4 @@
 .project
-artists.csv
-songs.csv
+db/artists.csv
+db/songs.csv
 
