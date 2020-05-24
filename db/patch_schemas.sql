@@ -39,7 +39,7 @@ CREATE TABLE songs(
     fuzzy_name          TEXT,
     word_count          INTEGER,
     kjbcode             TEXT,
-    language            INTEGER
+    language            INTEGER,
     category            INTEGER,
     artist_sn           INTEGER,
     artist_name         TEXT,
