@@ -28,7 +28,8 @@ psql -d ${dbname} -c "
        artists.name as artist_name,
        UPPER(regexp_replace(artists.name, '[^a-zA-Z0-9]+', '','g')) as artist_fuzzy_name,
        loudness,
-       vocal
+       vocal,
+       1
        from songs JOIN artists on songs.artist = artists.sn
        WHERE songs.deleted = FALSE
        ORDER BY sn )
@@ -43,7 +44,8 @@ psql -d ${dbname} -c "
        array_length(regexp_split_to_array(trim(name), '\s+'), 1),
        category,
        country,
-       picture
+       picture,
+       1
        FROM artists
        WHERE deleted = FALSE
        ORDER BY sn )
