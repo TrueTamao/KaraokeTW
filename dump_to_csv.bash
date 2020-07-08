@@ -19,34 +19,33 @@ psql -d ${dbname} -c "
     (SELECT songs.sn,
        songs.name,
        UPPER(regexp_replace(songs.name, '[^a-zA-Z0-9]+', '','g')) as fuzzy_name,
-       array_length(regexp_split_to_array(trim(songs.name), '\s+'), 1),
+       array_length(regexp_split_to_array(trim(regexp_replace(songs.name, '\(.*\)', '','g')), '\s+'), 1),
        path,
        kjbcode,
        songs.language,
        songs.category,
-       songs.artist as artist_sn,
-       artists.name as artist_name,
-       UPPER(regexp_replace(artists.name, '[^a-zA-Z0-9]+', '','g')) as artist_fuzzy_name,
+       songs.artist,
        loudness,
        vocal
        from songs JOIN artists on songs.artist = artists.sn
+       JOIN song_languages ON songs.language = song_languages.sn
        WHERE songs.deleted = FALSE
-       ORDER BY sn )
+       ORDER BY songs.sn )
        TO STDOUT with DELIMITER '|' csv ;" > ./db/songs.csv
 
 # 產生 karol 的 artists csv 檔
 psql -d ${dbname} -c "
     COPY
-    (SELECT sn,
-       name,
-       UPPER(regexp_replace(name, '[^a-zA-Z0-9]+', '','g')) as fuzzy_name,
-       array_length(regexp_split_to_array(trim(name), '\s+'), 1),
+    (SELECT artists.sn,
+       artists.name,
+       UPPER(regexp_replace(artists.name, '[^a-zA-Z0-9]+', '','g')) as fuzzy_name,
+       array_length(regexp_split_to_array(trim(regexp_replace(artists.name, '\(.*\)', '','g')), '\s+'), 1),
        category,
        country,
        picture
-       FROM artists
-       WHERE deleted = FALSE
-       ORDER BY sn )
+       FROM artists JOIN artist_countries ON artists.country = artist_countries.sn
+       WHERE artists.deleted = FALSE
+       ORDER BY artists.sn )
        TO STDOUT with DELIMITER '|' csv ;" > ./db/artists.csv
 
 # 產生原始的 song_categories csv 檔

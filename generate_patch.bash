@@ -31,14 +31,14 @@ case "$inserts" in
     ;;
     1) 
         grep -e ^+[1-9] release/songs_$targetTag \
-| sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO songs \
-(sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, artist_name, artist_fuzzy_name, loudness, vocal_channel) VALUES \
-( %d, \"%s\", \"%s\", %d, \" %s\", \"%s\", %d, %d, %d, \"%s\", \"%s\", %d, %d);\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13}' >> $sqlCmd
+| sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO raw_songs \
+(sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel) VALUES \
+( %d, \"%s\", \"%s\", %d, \" %s\", \"%s\", %d, %d, %d, %d, %d);\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11}' >> $sqlCmd
     ;;
     *) 
-    printf "INSERT INTO songs (sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, artist_name, artist_fuzzy_name, loudness, vocal_channel) VALUES \n" >> $sqlCmd 
+    printf "INSERT INTO raw_songs (sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel) VALUES \n" >> $sqlCmd 
     grep -e ^+[1-9] release/songs_$targetTag \
-| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, \" %s\", \"%s\", %d, %d, %d, \"%s\", \"%s\", %d, %d),\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13}' >> $sqlCmd
+| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, \" %s\", \"%s\", %d, %d, %d, %d, %d),\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11}' >> $sqlCmd
 	sed -i '$ s/,$/;/'  $sqlCmd
 ;;
 esac
@@ -58,12 +58,12 @@ case "$inserts" in
     ;;
     1) 
         grep -e ^+[1-9] release/artists_$targetTag \
-| sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO artists \
+| sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO raw_artists \
 (sn, name, fuzzy_name, word_count, category, country, picture) VALUES \
 ( %d, \"%s\", \"%s\", %d, %d, %d, \" %s\");\n", $1, $2, $3, $4, $5, $6, $7}' >> $sqlCmd
     ;;
     *) 
-    printf "INSERT INTO artists (sn, name, fuzzy_name, word_count, category, country, picture) VALUES \n" >> $sqlCmd 
+    printf "INSERT INTO raw_artists (sn, name, fuzzy_name, word_count, category, country, picture) VALUES \n" >> $sqlCmd 
     grep -e ^+[1-9] release/artists_$targetTag \
 | sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, %d, %d, \" %s\"),\n", $1, $2, $3, $4, $5, $6, $7}' >> $sqlCmd
 sed -i '$ s/,$/;/'  $sqlCmd
