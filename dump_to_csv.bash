@@ -29,9 +29,11 @@ psql -d ${dbname} -c "
        vocal
        from songs JOIN artists on songs.artist = artists.sn
        JOIN song_languages ON songs.language = song_languages.sn
-       WHERE songs.deleted = FALSE
+       WHERE songs.deleted = FALSE AND songs.sn > 0
        ORDER BY songs.sn )
        TO STDOUT with DELIMITER '|' csv ;" > ./db/songs.csv
+
+psql -d ${dbname} -c "COPY (SELECT * from songs ORDER BY sn) TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_songs.csv
 
 # 產生 karol 的 artists csv 檔
 psql -d ${dbname} -c "
@@ -44,9 +46,11 @@ psql -d ${dbname} -c "
        country,
        picture
        FROM artists JOIN artist_countries ON artists.country = artist_countries.sn
-       WHERE artists.deleted = FALSE
+       WHERE artists.deleted = FALSE and artists.sn > 0
        ORDER BY artists.sn )
        TO STDOUT with DELIMITER '|' csv ;" > ./db/artists.csv
+
+psql -d ${dbname} -c "COPY (SELECT * from artists ORDER BY sn) TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_artists.csv
 
 # 產生原始的 song_categories csv 檔
 psql -d ${dbname} -c "
@@ -57,13 +61,13 @@ psql -d ${dbname} -c "
 # 產生原始的 song_languages csv 檔
 psql -d ${dbname} -c "
     COPY
-    (SELECT sn, name, priority from song_languages WHERE deleted = FALSE ORDER BY sn )
+    (SELECT sn, name, priority from song_languages WHERE deleted = FALSE AND name <> 'YouTube' ORDER BY sn )
     TO STDOUT with DELIMITER '|' csv ;" > ./db/song_languages.csv
 
 # 產生原始的 artist_categories csv 檔
 psql -d ${dbname} -c "
     COPY
-    (SELECT sn, name, priority from artist_categories WHERE deleted = FALSE ORDER BY sn )
+    (SELECT sn, name, priority from artist_categories WHERE deleted = FALSE AND name <> 'YouTuber' ORDER BY sn )
     TO STDOUT with DELIMITER '|' csv ;" > ./db/artist_categories.csv
 
 # 產生原始的 artist_countries csv 檔
