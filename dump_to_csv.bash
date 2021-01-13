@@ -26,7 +26,8 @@ psql -d ${dbname} -c "
        songs.category,
        songs.artist,
        loudness,
-       vocal
+       vocal,
+       youtube
        from songs JOIN artists on songs.artist = artists.sn
        JOIN song_languages ON songs.language = song_languages.sn
        WHERE songs.deleted = FALSE AND songs.sn > 0
