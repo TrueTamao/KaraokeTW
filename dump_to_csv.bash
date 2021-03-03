@@ -2,10 +2,6 @@
 
 dbname=postgresql://mapa:mapacode@localhost:5432/origin_songs
 
-sudo su postgres -c "dropdb --if-exists origin_songs"
-sudo su postgres -c "createdb origin_songs"
-sudo su postgres -c "psql origin_songs < ./db/song.dump"
-
 # 已刪除的歌手，對應的歌曲也應該是已刪除的狀態
 psql -d ${dbname} -c "
     UPDATE songs
@@ -76,3 +72,6 @@ psql -d ${dbname} -c "
     COPY
     (SELECT sn, name, priority from artist_countries WHERE deleted = FALSE ORDER BY sn )
     TO STDOUT with DELIMITER '|' csv ;" > ./db/artist_countries.csv
+
+# 產生原始的 labels csv 檔
+psql -d ${dbname} -c "COPY (SELECT * from labels ORDER BY sn) TO STDOUT with DELIMITER '|' csv ;" > ./db/labels.csv
