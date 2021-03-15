@@ -37,12 +37,12 @@ case "$inserts" in
         grep -e ^+[1-9] release/songs_$targetTag \
 | sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO raw_songs \
 (sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel, youtube) VALUES \
-( %d, \"%s\", \"%s\", %d, \" %s\", \"%s\", %d, %d, %d, %d, %d, \"%s\");\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12}' >> $sqlCmd
+( %d, \"%s\", \"%s\", %d, \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\");\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12}' >> $sqlCmd
     ;;
     *) 
     printf "INSERT INTO raw_songs (sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel, youtube) VALUES \n" >> $sqlCmd
     grep -e ^+[1-9] release/songs_$targetTag \
-| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, \" %s\", \"%s\", %d, %d, %d, %d, %d, \"%s\"),\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12}' >> $sqlCmd
+| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\"),\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12}' >> $sqlCmd
 	sed -i '$ s/,$/;/'  $sqlCmd
 ;;
 esac
@@ -58,18 +58,18 @@ inserts=$(grep -c ^+[1-9] release/artists_$targetTag)
 
 case "$inserts" in
     0) 
-        echo "No Artist Inserts"
+        echo "No Artist Insert"
     ;;
     1) 
         grep -e ^+[1-9] release/artists_$targetTag \
 | sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO raw_artists \
 (sn, name, fuzzy_name, word_count, category, country, picture) VALUES \
-( %d, \"%s\", \"%s\", %d, %d, %d, \" %s\");\n", $1, $2, $3, $4, $5, $6, $7}' >> $sqlCmd
+( %d, \"%s\", \"%s\", %d, %d, %d, \"%s\");\n", $1, $2, $3, $4, $5, $6, $7}' >> $sqlCmd
     ;;
     *) 
     printf "INSERT INTO raw_artists (sn, name, fuzzy_name, word_count, category, country, picture) VALUES \n" >> $sqlCmd
     grep -e ^+[1-9] release/artists_$targetTag \
-| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, %d, %d, \" %s\"),\n", $1, $2, $3, $4, $5, $6, $7}' >> $sqlCmd
+| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, %d, %d, \"%s\"),\n", $1, $2, $3, $4, $5, $6, $7}' >> $sqlCmd
 sed -i '$ s/,$/;/'  $sqlCmd
 ;;
 esac
