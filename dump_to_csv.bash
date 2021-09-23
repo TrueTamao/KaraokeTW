@@ -26,7 +26,7 @@ psql -d ${dbname} -c "
        youtube
        from songs JOIN artists on songs.artist = artists.sn
        JOIN song_languages ON songs.language = song_languages.sn
-       WHERE songs.deleted = FALSE AND songs.sn > 0
+       WHERE songs.deleted = FALSE AND songs.sn > 0 AND songs.missing = FALSE
        ORDER BY songs.sn )
        TO STDOUT with DELIMITER '|' csv ;" > ./db/songs.csv
 

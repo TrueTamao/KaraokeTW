@@ -40,7 +40,7 @@ case "$inserts" in
     *) 
     grep -e ^+[1-9] release/origin_artists_$targetTag \
     | sed 's/^+//g' \
-    | awk -F"|" '{printf "psql -d song -c \"INSERT INTO artists (sn,name,category,country,updated_time,deleted,deleted_time) VALUES (%d,@%s@,%d,%d,@%s@,%s,@%s@) ON CONFLICT (sn) DO UPDATE SET name=EXCLUDED.name,category=EXCLUDED.category,country=EXCLUDED.country,updated_time = EXCLUDED.updated_time,deleted=EXCLUDED.deleted,deleted_time=EXCLUDED.deleted_time;\"; echo %d;\n",$1,$2,$3,$4,$6,$7,$8,$1}' >> $sqlCmd
+    | awk -F"|" '{printf "psql -d song -c \"INSERT INTO artists (sn,name,category,country,updated_time,deleted,deleted_time,checked,missing) VALUES (%d,@%s@,%d,%d,@%s@,%s,@%s@,%s,%s) ON CONFLICT (sn) DO UPDATE SET name=EXCLUDED.name,category=EXCLUDED.category,country=EXCLUDED.country,updated_time = EXCLUDED.updated_time,deleted=EXCLUDED.deleted,deleted_time=EXCLUDED.deleted_time,checked=EXCLUDED.checked,missing=EXCLUDED.missing;\"; echo %d;\n",$1,$2,$3,$4,$6,$7,$8,$9,$10,$1}' >> $sqlCmd
     ;;
 esac
 
@@ -87,6 +87,23 @@ sed -i "s/,f,/,false,/g" $sqlCmd
 sed -i "s/,t,/,true,/g" $sqlCmd
 sed -i "s/,f)/,false)/g" $sqlCmd
 sed -i "s/,t)/,true)/g" $sqlCmd
+
+printf "\nsleep 15\n" >> $sqlCmd
+printf "psql -d song -c \"COPY songs (sn, kjbcode, isrc, name, artist, language, label) TO STDOUT with DELIMITER '|' csv;\" > ~/songs.csv\n" >> $sqlCmd
+printf "psql -d service -c \"DELETE FROM songs;\"\n" >> $sqlCmd
+printf "psql -d service -c \"COPY songs (sn, kjbcode, isrc, name, artist, language, label) FROM STDIN DELIMITER '|' csv;\" < ~/songs.csv\n" >> $sqlCmd
+
+printf "psql -d song -c \"COPY artists (sn, name) TO STDOUT with DELIMITER '|' csv;\" > ~/artists.csv\n" >> $sqlCmd
+printf "psql -d service -c \"DELETE FROM artists;\"\n" >> $sqlCmd
+printf "psql -d service -c \"COPY artists (sn, name) FROM STDIN DELIMITER '|' csv;\" < ~/artists.csv\n" >> $sqlCmd
+
+printf "psql -d song -c \"COPY labels (sn, name, association) TO STDOUT with DELIMITER '|' csv;\" > ~/labels.csv\n" >> $sqlCmd
+printf "psql -d service -c \"DELETE FROM labels;\"\n" >> $sqlCmd
+printf "psql -d service -c \"COPY labels (sn, name, association) FROM STDIN DELIMITER '|' csv;\" < ~/labels.csv\n" >> $sqlCmd
+
+printf "psql -d song -c \"COPY associations (id, country_code) TO STDOUT WITH DELIMITER '|' csv;\" > ~/associations.csv\n" >> $sqlCmd
+printf "psql -d service -c \"DELETE FROM associations;\"\n" >> $sqlCmd
+printf "psql -d service -c \"COPY associations (id, country_code) FROM STDIN DELIMITER '|' csv;\" < ~/associations.csv\n" >> $sqlCmd
 
 echo -e "\e[1;5;32m Output file is "$sqlCmd" \e[0m"
 
