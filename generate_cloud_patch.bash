@@ -74,7 +74,7 @@ case "$inserts" in
     *)
     grep -e ^+[1-9] release/origin_songs_$targetTag \
     | sed 's/^+//g' \
-    | awk -F"|" '{printf "psql -d song -c \"INSERT INTO songs (sn,kjbcode,isrc,name,artist,language,category,label,loudness,vocal,release_date,updated_time,deleted,deleted_time,youtube,youtube_karaoke,new_file,missing,duration_sec) VALUES (%d,@%s@,@%s@,@%s@,%d,%d,%d,%d,%.1f,%d,@%s@,@%s@,%s,@%s@,@%s@,@%s@,%s,%s) ON CONFLICT (sn) DO UPDATE SET kjbcode=EXCLUDED.kjbcode,isrc=EXCLUDED.isrc,name=EXCLUDED.name,artist=EXCLUDED.artist,language=EXCLUDED.language,category=EXCLUDED.category,label=EXCLUDED.label,loudness=EXCLUDED.loudness,vocal=EXCLUDED.vocal,release_date=EXCLUDED.release_date,updated_time=EXCLUDED.updated_time,deleted=EXCLUDED.deleted,deleted_time=EXCLUDED.deleted_time,youtube=EXCLUDED.youtube,youtube_karaoke=EXCLUDED.youtube_karaoke,new_file=EXCLUDED.new_file,missing=EXCLUDED.missing,duration_sec=EXCLUDED.duration_sec;\"; echo %d;\n",$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$16,$18,$19,$20,$21,$22,$23,$24,$25,$1}' >> $sqlCmd
+    | awk -F"|" '{printf "psql -d song -c \"INSERT INTO songs (sn,kjbcode,isrc,name,artist,language,category,label,loudness,vocal,release_date,updated_time,deleted,deleted_time,youtube,youtube_karaoke,new_file,missing,duration_sec) VALUES (%d,@%s@,@%s@,@%s@,%d,%d,%d,%d,%.1f,%d,@%s@,@%s@,%s,@%s@,@%s@,@%s@,%s,%s,%d) ON CONFLICT (sn) DO UPDATE SET kjbcode=EXCLUDED.kjbcode,isrc=EXCLUDED.isrc,name=EXCLUDED.name,artist=EXCLUDED.artist,language=EXCLUDED.language,category=EXCLUDED.category,label=EXCLUDED.label,loudness=EXCLUDED.loudness,vocal=EXCLUDED.vocal,release_date=EXCLUDED.release_date,updated_time=EXCLUDED.updated_time,deleted=EXCLUDED.deleted,deleted_time=EXCLUDED.deleted_time,youtube=EXCLUDED.youtube,youtube_karaoke=EXCLUDED.youtube_karaoke,new_file=EXCLUDED.new_file,missing=EXCLUDED.missing,duration_sec=EXCLUDED.duration_sec;\"; echo %d;\n",$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$16,$18,$19,$20,$21,$22,$23,$24,$25,$1}' >> $sqlCmd
     ;;
     esac
 
@@ -83,6 +83,10 @@ sed -i "s/'/''/g" $sqlCmd
 sed -i "s/@@/NULL/g" $sqlCmd
 sed -i "s/@/'/g" $sqlCmd
 sed -i "s/\`/''/g" $sqlCmd
+sed -i "s/,f,f,/,false,false,/g" $sqlCmd
+sed -i "s/,f,t,/,false,true,/g" $sqlCmd
+sed -i "s/,t,f,/,true,false,/g" $sqlCmd
+sed -i "s/,t,t,/,true,true,/g" $sqlCmd
 sed -i "s/,f,/,false,/g" $sqlCmd
 sed -i "s/,t,/,true,/g" $sqlCmd
 sed -i "s/,f)/,false)/g" $sqlCmd
