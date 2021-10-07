@@ -91,6 +91,7 @@ sed -i "s/,f,/,false,/g" $sqlCmd
 sed -i "s/,t,/,true,/g" $sqlCmd
 sed -i "s/,f)/,false)/g" $sqlCmd
 sed -i "s/,t)/,true)/g" $sqlCmd
+sed -i "s/'\"3''07\"\"\"'/'3''07\x5C\"'/g" $sqlCmd
 
 printf "\nsleep 15\n" >> $sqlCmd
 printf "psql -d song -c \"COPY songs (sn, kjbcode, isrc, name, artist, language, label) TO STDOUT with DELIMITER '|' csv;\" > ~/songs.csv\n" >> $sqlCmd
