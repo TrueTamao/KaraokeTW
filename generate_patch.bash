@@ -126,6 +126,10 @@ echo $targetTag | awk -F"." '{printf "UPDATE versions SET major = %d, minor = %d
 echo "COMMIT;" >> $sqlCmd
 echo "VACUUM;" >> $sqlCmd
 
+sed -i "s/, \"\"\"\",/, \"\",/g" $sqlCmd
+sed -i "s/, \"\"3'07\"\"\"\",/, \"3'07\"\"\",/g" $sqlCmd
+
+
 cp $sqlCmd release/patch.sql
 
 echo -e "\e[1;5;32m Output file is "$sqlCmd" \e[0m"
