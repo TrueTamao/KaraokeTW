@@ -17,9 +17,8 @@ do
 done
 
 
-for ((i=0; i< 132; i=i+1))
+for ((i=585874; i<= 585903; i=i+1))
 do
-    kjbcode=$((i+start_kjbcode))
+    kjbcode=$i
     printf "gsutil -m cp -r gs://new_songs/new_song_videos_44100_25fps/%s gs://song_videos_standard/indonesia_video_out_44100_25fps/ \n" $kjbcode >> cp_to_storage.bash
-    printf "gsutil mv gs://song_videos_standard/indonesia_video_out_44100_25fps/%s/%s_unenc.m3u8 gs://song_videos_standard/indonesia_video_out_44100_25fps/%s/%s.m3u8 \n" $kjbcode $kjbcode  $kjbcode $kjbcode >> cp_to_storage.bash
 done
