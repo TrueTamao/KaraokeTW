@@ -1,2 +1,2 @@
 Song: 0.12.30
-YouTube: 0.0.2
+YouTube: 0.0.3
