@@ -3,3 +3,7 @@ release/**
 cloud/**
 modify/**
 m3u8/**
+db_*.tar.gz
+schema_*.tar.gz
+song_*.tar.gz
+cp_to_storage.bash
