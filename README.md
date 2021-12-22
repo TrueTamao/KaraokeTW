@@ -22,7 +22,11 @@ bash dump_to_csv.bash
 * 產生 song patch file
 
 ```shell
+# For tag 0.x.x
 bash generate_patch.bash
+
+# For tag 1.x.x
+bash generate_patch_with_new_flag.bash
 ```
 
 * 產生 cloud song patch file

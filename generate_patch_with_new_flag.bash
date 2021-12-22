@@ -4,12 +4,12 @@ read -p "Source Tag ? [x.x.x] " sourceTag
 read -p "Target Tag ? [x.x.x] " targetTag
 read -p "From Remote Repositories (Y/N) ? [N]" fromRemote
 
-if ! echo $sourceTag | grep -e ^[0]*[\.][0-9]*[\.][0-9]*$  ; then
+if ! echo $sourceTag | grep -e ^[1-9]*[\.][0-9]*[\.][0-9]*$  ; then
     echo -e "\e[1;5;31m Invalid Source Tag \e[0m"
     exit 1
 fi
 
-if ! echo $targetTag | grep -e ^[0]*[\.][0-9]*[\.][0-9]*$  ; then
+if ! echo $targetTag | grep -e ^[1-9]*[\.][0-9]*[\.][0-9]*$  ; then
     echo -e "\e[1;5;31m Invalid Target Tag \e[0m"
     exit 1
 fi
@@ -23,7 +23,7 @@ if [ "$fromRemote" = "Y" ] || [ "$fromRemote" = "y" ] ; then
     git fetch --all
 fi
 
-git diff -U0 --output=release/songs_$targetTag $sourceTag $targetTag db/songs.csv 
+git diff -U0 --output=release/songs_$targetTag $sourceTag $targetTag db/songs_new_flag.csv 
 
 grep -e ^-[1-9] release/songs_$targetTag | sed 's/^-//g' | awk -F"|" '{printf "DELETE FROM raw_songs WHERE sn = %d;\n", $1}' >> $sqlCmd
 
@@ -36,13 +36,13 @@ case "$inserts" in
     1) 
         grep -e ^+[1-9] release/songs_$targetTag \
 | sed 's/^+//g' | awk -F"|" '{printf "INSERT INTO raw_songs \
-(sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel, youtube) VALUES \
-( %d, \"%s\", \"%s\", %d, \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\");\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12}' >> $sqlCmd
+(sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel, youtube, new) VALUES \
+( %d, \"%s\", \"%s\", %d, \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\", %d);\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13}' >> $sqlCmd
     ;;
     *) 
-    printf "INSERT INTO raw_songs (sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel, youtube) VALUES \n" >> $sqlCmd
+    printf "INSERT INTO raw_songs (sn, name, fuzzy_name, word_count, path, kjbcode, language, category, artist_sn, loudness, vocal_channel, youtube, new) VALUES \n" >> $sqlCmd
     grep -e ^+[1-9] release/songs_$targetTag \
-| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\"),\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12}' >> $sqlCmd
+| sed 's/^+//g' | awk -F"|" '{printf "( %d, \"%s\", \"%s\", %d, \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\", %d),\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13}' >> $sqlCmd
 	sed -i '$ s/,$/;/'  $sqlCmd
 ;;
 esac
