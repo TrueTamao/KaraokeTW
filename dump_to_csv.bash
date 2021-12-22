@@ -30,6 +30,28 @@ psql -d ${dbname} -c "
        ORDER BY songs.sn )
        TO STDOUT with DELIMITER '|' csv ;" > ./db/songs.csv
 
+# 產生 songs_with_new_flag csv 檔
+psql -d ${dbname} -c "
+    COPY
+    (SELECT songs.sn,
+       songs.name,
+       UPPER(regexp_replace(songs.name, '[^a-zA-Z0-9]+', '','g')) as fuzzy_name,
+       array_length(regexp_split_to_array(trim(regexp_replace(songs.name, '\(.*\)', '','g')), '\s+'), 1),
+       path,
+       kjbcode,
+       songs.language,
+       songs.category,
+       songs.artist,
+       loudness,
+       vocal,
+       youtube,
+       case when new_file then 1 else 0 end
+       from songs JOIN artists on songs.artist = artists.sn
+       JOIN song_languages ON songs.language = song_languages.sn
+       WHERE songs.deleted = FALSE AND songs.sn > 0 AND songs.missing = FALSE
+       ORDER BY songs.sn )
+       TO STDOUT with DELIMITER '|' csv ;" > ./db/songs_new_flag.csv
+
 psql -d ${dbname} -c "COPY (SELECT * from songs ORDER BY sn) TO STDOUT with DELIMITER '|' csv ;" > ./db/origin_songs.csv
 
 # 產生 karol 的 artists csv 檔
