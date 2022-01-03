@@ -4,12 +4,12 @@ read -p "Source Tag ? [x.x.x] " sourceTag
 read -p "Target Tag ? [x.x.x] " targetTag
 read -p "From Remote Repositories (Y/N) ? [N]" fromRemote
 
-if ! echo $sourceTag | grep -e ^[0-9]*[\.][0-9]*[\.][0-9]*$  ; then
+if ! echo $sourceTag | grep -e ^[0]*[\.][0-9]*[\.][0-9]*$  ; then
     echo -e "\e[1;5;31m Invalid Source Tag \e[0m"
     exit 1
 fi
 
-if ! echo $targetTag | grep -e ^[0-9]*[\.][0-9]*[\.][0-9]*$  ; then
+if ! echo $targetTag | grep -e ^[0]*[\.][0-9]*[\.][0-9]*$  ; then
     echo -e "\e[1;5;31m Invalid Target Tag \e[0m"
     exit 1
 fi
