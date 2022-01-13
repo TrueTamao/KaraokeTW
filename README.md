@@ -2,6 +2,26 @@
 * dump_to_csv.bash: 將 song.dump 分離出歌曲, 歌手以及類別的表格 （csv）。
 * generate_patch.bash: 指定 Tag 產生歌庫的更新指令稿。 
 * 更新指令稿會出現在 release 目錄內。
+* db/song.dump 和 db/youtube.dump 都是從 tw server 備份出來的，常用的指令如下：
+
+```
+//進入資料庫 CONTAINER
+$ sudo docker exec -ti pgsql /bin/bash
+
+//在本機與 CONTAINER 中複製檔案
+$ sudo docker cp
+
+// 在 CONTAINER 中 備份資料庫
+# su postgres
+$ cd
+$ mkdir -p db
+$ rm -rf ./db/*
+$ vacuumdb -af
+$ pg_dump -d song -O -f ~/song.dump
+$ cp ~/song.dump db
+$ tar -zcvf db_$(date +'%Y%m%d_%H%M').tar.gz db
+
+```
 
 * 從 .dump 檔刷新 origin_songs database
 
