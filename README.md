@@ -4,6 +4,17 @@ First Try:
 2. generate_cloud_patch.bash
 3. storage.bash (copy song files from new song area to online area) 
 
+## storage.bash
+
+1. Generate bash file to copy song files to online area.
+2. Shall be install gsutil
+3. Modify start kjbcode and end kjbcode in storage.basdh to generate cp_to_storage.bash
+4. run cp_to_storage.bash
+5. Confirm that the song can be played on the CMS
+
+
+====================================================================
+
 
 * 此程序需要在 linux 環境下執行，需要安裝 postgres 套件，建議是 12 版。
 * dump_to_csv.bash: 將 song.dump 分離出歌曲, 歌手以及類別的表格 （csv）。
