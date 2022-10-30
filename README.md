@@ -1,3 +1,38 @@
+### Perodure
+
+* Convert song file to m3u8 format.
+* upload new song file to GCP storage by gsutil
+
+  ![](./resource/new_song_storage.png)
+   
+* Add song information by CMS (TW Server).
+* Check new song content is corrected by CMS.
+* Copy new song file to online storage by gsutil
+
+![](./resource/new_song_storage.png)
+
+* Dump song database from GCP VM of TW Server.
+
+The VM name of TW Server is stage and IP is 34.101.206.74
+    
+![](./resource/new_song_storage.png)
+    
+If you cannot use ssh to log in to the remote, add ssh-key to Metadata of GCP VM.
+    
+![](./resource/Metadata_ssh_key.png)
+
+* Extract song table from database dump file.
+* Commit new song table to git repository and set a version tag.
+* generate patch script from git repository.
+* update song patch by Song patches of CMS of TW Server.
+* update song database of IDN server.
+* update song patch by Song patches of CMS of IDN Server.
+
+
+
+
+
+
 First Try:
 
 1. generate_patch.bash
