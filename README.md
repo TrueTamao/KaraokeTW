@@ -9,21 +9,51 @@
 * Check new song content is corrected by CMS.
 * Copy new song file to online storage by gsutil
 
-![](./resource/new_song_storage.png)
+![](./resource/online_song_storage.png)
 
-* Dump song database from GCP VM of TW Server.
+* Remote login in  GCP VM of TW Server by SSH.
 
 The VM name of TW Server is stage and IP is 34.101.206.74
     
-![](./resource/new_song_storage.png)
+![](./resource/tw_server.png)
     
 If you cannot use ssh to log in to the remote, add ssh-key to Metadata of GCP VM.
     
 ![](./resource/Metadata_ssh_key.png)
 
+* Dump song database from GCP VM of TW Server.
+
+    alvin@local$ ssh 34.101.206.74
+    ...
+    alvin@stage:~$ sudo docker exec -ti pgsql /bin/bash
+    root@pgsql:/# su postgres
+    postgres@pgsql:/$ cd
+    postgres@pgsql:/$ mkdir -p db
+    postgres@pgsql:/$ rm -rf ./db/*
+    postgres@pgsql:/$ vacuumdb -af
+    postgres@pgsql:/$ pg_dump -d song -O -f ~/song.dump
+    postgres@pgsql:/$ cp ~/song.dump db
+    postgres@pgsql:/$ tar -zcvf db_$(date +'%Y%m%d_%H%M').tar.gz db
+
 * Extract song table from database dump file.
+    
+    copy this tar.gz file to local compute
+    copy song.dump to {song_repository}/db
+    
+    alvin@local:{song_repository}$ bash restore_origin_songs.bash
+    alvin@local:{song_repository}$ bash dump_to_csv.bash
+    alvin@local:{song_repository}$ bash backup_from_db.bash
+
 * Commit new song table to git repository and set a version tag.
+    
+    git commit the changed files and add tag (for example 0.12.43)
+
+
 * generate patch script from git repository.
+
+    alvin@local$ bash generate_patch.bash
+    alvin@local$ bash generate_cloud_patch.bash
+
 * update song patch by Song patches of CMS of TW Server.
 * update song database of IDN server.
 * update song patch by Song patches of CMS of IDN Server.
