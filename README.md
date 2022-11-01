@@ -23,6 +23,7 @@ If you cannot use ssh to log in to the remote, add ssh-key to Metadata of GCP VM
 
 * Dump song database from GCP VM of TW Server.
 
+```
     alvin@local$ ssh 34.101.206.74
     ...
     alvin@stage:~$ sudo docker exec -ti pgsql /bin/bash
@@ -34,25 +35,31 @@ If you cannot use ssh to log in to the remote, add ssh-key to Metadata of GCP VM
     postgres@pgsql:/$ pg_dump -d song -O -f ~/song.dump
     postgres@pgsql:/$ cp ~/song.dump db
     postgres@pgsql:/$ tar -zcvf db_$(date +'%Y%m%d_%H%M').tar.gz db
+```
 
 * Extract song table from database dump file.
     
+```
     copy this tar.gz file to local compute
     copy song.dump to {song_repository}/db
     
     alvin@local:{song_repository}$ bash restore_origin_songs.bash
     alvin@local:{song_repository}$ bash dump_to_csv.bash
     alvin@local:{song_repository}$ bash backup_from_db.bash
+```
 
 * Commit new song table to git repository and set a version tag.
     
+```
     git commit the changed files and add tag (for example 0.12.43)
-
+```
 
 * generate patch script from git repository.
 
+```
     alvin@local$ bash generate_patch.bash
     alvin@local$ bash generate_cloud_patch.bash
+```
 
 * update song patch by Song patches of CMS of TW Server.
 * update song database of IDN server.
