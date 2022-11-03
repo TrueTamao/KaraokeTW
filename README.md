@@ -62,6 +62,11 @@ If you cannot use ssh to log in to the remote, add ssh-key to Metadata of GCP VM
 ```
 
 * update song patch by Song patches of CMS of TW Server.
+
+![](./resource/song_patches.png)
+
+* Reboot STB (TW Server version). check song patch version and request new song.
+
 * update song database of IDN server.
 * update song patch by Song patches of CMS of IDN Server.
 
